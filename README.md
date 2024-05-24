@@ -50,11 +50,11 @@ Battery box is great for prividing extra power to hungry devices and storage sys
 ![image](https://github.com/canitzp/Battery-Box/assets/68805162/790544e0-71ba-42f6-af6e-9c271ee9d227)
 
 
-|Tested to work with|
-|-----------|
-|Just a battery|
-|Powah! batteries & Energy cells|
-|Thermal series Flux capacitor|
-|Mekanism energy tablet|
+|Tested to work with||
+|-----------|-----------|
+|Just a battery|Thermal series Flux capacitor|
+|Powah! batteries & Energy cells|Mekanism energy tablet|
+
+
 
 If you experience any issues or incompatabilities, Please open an Issue!
