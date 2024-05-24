@@ -1,0 +1,36 @@
+# This workflow will build a Java project with Gradle
+# For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-gradle
+
+name: Build Battery Box
+
+on:
+  push:
+    branches: [ master ]
+    paths:
+      - src/**
+  pull_request:
+    branches: [ master ]
+    paths:
+      - src/**
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'adopt'
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+      - name: Generate mod assets
+        run: ./gradlew runData
+      - name: Build with Gradle
+        run: ./gradlew build
+      - name: Create artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: Battery-Box-Artifact
+          path: build/libs/*
