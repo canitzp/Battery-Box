@@ -23,8 +23,7 @@ Assets and Idea by **Jadan1213**
 Using the Battery box is simple, just connect it in-line between an RF power source and whatever you're powering.\
 You can insert a battery by holding the item and right clicking on the block, shift right clicking will remove the item.
 
-The rate of power flow into and out of the battery is regulated based on the RF transfer rate of the battery, and the pipes/energy\
-cables you're connecting to it. You can hook up the Battery box from any side of the block.
+The rate of power flow into and out of the battery is regulated based on the RF transfer rate of the battery, and the pipes/energy cables you're connecting to it. You can hook up the Battery box from any side of the block.
 
 This is great if your power usage temporarily exceeds your power generation capabilities, as the Battery box\
 will provide the power your devices need and recharge when excess power is available.
