@@ -14,7 +14,7 @@ Pairs perfectly with Just A Battery, but should work with other mod's battery ce
 
 
 ![image](https://github.com/canitzp/Battery-Box/assets/68805162/304b6d18-47f8-4cac-b299-68791ff9ddb5) 
-![image](https://github.com/canitzp/Battery-Box/assets/68805162/6096c385-959e-4e15-84ce-08339cf1c367)
+![image](https://github.com/canitzp/Battery-Box/assets/68805162/87381d0e-a9bb-420d-9776-6d55a6b75ebb)
 
 Mod coding by **Canitzp**\
 Assets and Idea by **Jadan1213**
