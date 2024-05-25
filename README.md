@@ -47,7 +47,7 @@ While this will allow you to chain multiple Battery boxes together, Keep in mind
 
 As a bonus, You can use a battery box to charge items too! These items however will not provide power to connected devices. They can only be charged.
 
-![image](https://github.com/canitzp/Battery-Box/assets/68805162/5d3b8a99-2d89-4aa2-b6a8-2eb930342577)
+![image](https://github.com/canitzp/Battery-Box/assets/68805162/ca9b0cd0-7af5-4a7c-a821-7ed7b0ca13e4)
 
 
 Battery box is great for prividing extra power to hungry devices and storage systems when needed!
