@@ -16,5 +16,6 @@ public class BBLanguageEnglish extends LanguageProvider {
         this.add(BatteryBox.BATTERY_BOX.get(), "Battery Box");
         this.add("block.batterybox.battery_box.description", "Insert any battery, to create a block version of it. Multiples can be put together to form a big battery. All sides are inputs and outputs.");
         this.add("block.batterybox.battery_box.empty", "Empty");
+        this.add("block.batterybox.battery_box.charging_only", "Charging only!");
     }
 }

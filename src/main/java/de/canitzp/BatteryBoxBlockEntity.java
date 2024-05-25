@@ -112,10 +112,17 @@ public class BatteryBoxBlockEntity extends BlockEntity {
 
     public InteractionResult use(Player player, InteractionHand hand, ItemStack heldStack){
         if(!this.getStack().isEmpty()){
-            if(player.isShiftKeyDown() && heldStack.isEmpty()){
-                player.setItemInHand(hand, this.getStack());
-                this.setStack(ItemStack.EMPTY);
-                return InteractionResult.SUCCESS;
+            if(player.isShiftKeyDown()){
+                if(heldStack.isEmpty()){
+                    player.setItemInHand(hand, this.getStack());
+                    this.setStack(ItemStack.EMPTY);
+                    return InteractionResult.SUCCESS;
+                } else {
+                    if (player.addItem(this.getStack())) {
+                        this.setStack(ItemStack.EMPTY);
+                        return InteractionResult.SUCCESS;
+                    }
+                }
             } else {
                 player.displayClientMessage(this.composeMessage(), true);
                 if(heldStack.getCapability(ForgeCapabilities.ENERGY).isPresent()){
@@ -150,6 +157,11 @@ public class BatteryBoxBlockEntity extends BlockEntity {
         c.append(": ");
         c.append(Component.literal(String.format("%d/%d", storage.getEnergyStored(), storage.getMaxEnergyStored())));
         c.append(Component.literal(String.format(" (%.2f%%)", stateOfChargePercent)));
+
+        if(storage.getEnergyStored() > 0 && !storage.canExtract()){
+            c.append(Component.literal(" "));
+            c.append(Component.translatable("block.batterybox.battery_box.charging_only").withStyle(ChatFormatting.RED));
+        }
 
         return c;
     }
