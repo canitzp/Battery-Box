@@ -208,8 +208,12 @@ public class BatteryBoxBlockEntity extends BlockEntity {
                                 if(stateOfCharge > otherStateOfCharge){
                                     float stateOfChargeDifference = stateOfCharge - otherStateOfCharge;
                                     int energyToTransfer = (int)((otherStorage.getMaxEnergyStored() * stateOfChargeDifference) / 2F); // cast to int is intentional
-                                    storage.extractEnergy(otherStorage.receiveEnergy(energyToTransfer, false), false);
-                                    be.setChanged();
+                                    int energyThatCanBeExtracted = storage.extractEnergy(energyToTransfer, true);
+                                    if(energyThatCanBeExtracted > 0){
+                                        int energyThatWasReceived = otherStorage.receiveEnergy(energyThatCanBeExtracted, false);
+                                        storage.extractEnergy(energyThatWasReceived, false);
+                                        be.setChanged();
+                                    }
                                 }
                             }
                             if(storage.getEnergyStored() <= 0){

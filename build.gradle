@@ -72,11 +72,15 @@ repositories {
     maven {
         url = "https://maven.blamejared.com/"
     }
+    maven {
+        url = "https://modmaven.dev"
+    }
 }
 
 dependencies {
     minecraft "net.minecraftforge:forge:${project.forge_version}"
     implementation fg.deobf("maven.modrinth:justabattery:47.2.1")
+    implementation fg.deobf("mekanism:Mekanism:1.20.1-10.4.5.19")
     implementation fg.deobf("mezz.jei:jei-${project.jei_version}")
 }
 
