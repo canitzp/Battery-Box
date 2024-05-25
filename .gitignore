@@ -1,9 +1,7 @@
 # Created by .ignore support plugin (hsz.mobi)
 .gradle/
 .idea/
-data/
 build/
 classes/
-run/
-run_server/
+run*
 /src/generated/
