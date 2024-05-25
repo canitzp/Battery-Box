@@ -1,11 +1,11 @@
 package de.canitzp.data;
 
 import de.canitzp.BatteryBox;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.client.model.generators.ItemModelProvider;
-import net.minecraftforge.common.data.ExistingFileHelper;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.client.model.generators.ItemModelProvider;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 public class BBItemModelProvider extends ItemModelProvider {
 
@@ -15,6 +15,6 @@ public class BBItemModelProvider extends ItemModelProvider {
 
     @Override
     protected void registerModels() {
-        this.withExistingParent(ForgeRegistries.BLOCKS.getKey(BatteryBox.BATTERY_BOX.get()).getPath(), new ResourceLocation(BatteryBox.MODID, "block/battery_box_0"));
+        this.withExistingParent(BuiltInRegistries.BLOCK.getKey(BatteryBox.BATTERY_BOX.get()).getPath(), new ResourceLocation(BatteryBox.MODID, "block/battery_box_0"));
     }
 }

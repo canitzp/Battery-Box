@@ -2,6 +2,7 @@ package de.canitzp;
 
 import de.canitzp.data.*;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.world.item.BlockItem;
@@ -9,17 +10,18 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraftforge.common.data.ExistingFileHelper;
-import net.minecraftforge.data.event.GatherDataEvent;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import net.neoforged.neoforge.data.event.GatherDataEvent;
+import net.neoforged.neoforge.registries.DeferredRegister;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Supplier;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 @Mod(BatteryBox.MODID)
@@ -27,25 +29,25 @@ public class BatteryBox {
 
     public static final String MODID = "batterybox";
 
-    public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, BatteryBox.MODID);
-    public static final RegistryObject<Block> BATTERY_BOX = BLOCKS.register("battery_box", () -> BatteryBoxBlock.INSTANCE);
+    public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(BuiltInRegistries.BLOCK, BatteryBox.MODID);
+    public static final Supplier<BatteryBoxBlock> BATTERY_BOX = BLOCKS.register("battery_box", () -> BatteryBoxBlock.INSTANCE);
 
-    public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, BatteryBox.MODID);
-    public static final RegistryObject<Item> BATTERY_BOX_ITEM = ITEMS.register("battery_box", () -> new BlockItem(BATTERY_BOX.get(), new Item.Properties()));
+    public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(BuiltInRegistries.ITEM, BatteryBox.MODID);
+    public static final Supplier<BlockItem> BATTERY_BOX_ITEM = ITEMS.register("battery_box", () -> new BlockItem(BATTERY_BOX.get(), new Item.Properties()));
 
-    public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITY_TYPES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES, BatteryBox.MODID);
-    public static final RegistryObject<BlockEntityType<?>> BATTERY_BOX_ENTITY_TYPE = BLOCK_ENTITY_TYPES.register("battery_box", () -> BatteryBoxBlockEntity.TYPE);
+    public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITY_TYPES = DeferredRegister.create(BuiltInRegistries.BLOCK_ENTITY_TYPE, BatteryBox.MODID);
+    public static final Supplier<BlockEntityType<BatteryBoxBlockEntity>> BATTERY_BOX_ENTITY_TYPE = BLOCK_ENTITY_TYPES.register("battery_box", () -> BatteryBoxBlockEntity.TYPE);
 
     public static final DeferredRegister<CreativeModeTab> TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MODID);
-    public static final RegistryObject<CreativeModeTab> TAB = TABS.register("tab", BatteryBoxTab::create);
+    public static final Supplier<CreativeModeTab> TAB = TABS.register("tab", BatteryBoxTab::create);
 
-    public BatteryBox() {
-        IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
-
+    public BatteryBox(IEventBus bus, ModContainer modContainer) {
         BLOCKS.register(bus);
         ITEMS.register(bus);
         BLOCK_ENTITY_TYPES.register(bus);
         TABS.register(bus);
+
+        bus.addListener(this::registerCapabilities);
     }
 
     @SubscribeEvent
@@ -60,5 +62,10 @@ public class BatteryBox {
         generator.addProvider(true, new BBRecipeProvider(generator));
         generator.addProvider(true, new BBLanguageEnglish(generator));
         generator.addProvider(true, new BBLootTableSub(generator));
+    }
+
+    private void registerCapabilities(RegisterCapabilitiesEvent event){
+        event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, BATTERY_BOX_ENTITY_TYPE.get(), BatteryBoxBlockEntity::getEnergyStorage);
+        event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, BATTERY_BOX_ENTITY_TYPE.get(), BatteryBoxBlockEntity::getItemHandler);
     }
 }

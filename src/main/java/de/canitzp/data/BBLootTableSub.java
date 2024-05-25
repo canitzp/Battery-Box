@@ -7,7 +7,7 @@ import net.minecraft.data.loot.LootTableProvider;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 import java.util.List;
 import java.util.Set;
@@ -31,7 +31,8 @@ public class BBLootTableSub extends LootTableProvider {
 
         @Override
         protected Iterable<Block> getKnownBlocks() {
-            return BatteryBox.BLOCKS.getEntries().stream().flatMap(RegistryObject::stream)::iterator;
+            List<Block> list = (List<Block>) BatteryBox.BLOCKS.getEntries().stream().map(DeferredHolder::get).toList();
+            return list;
         }
 
         @Override

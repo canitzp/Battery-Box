@@ -1,5 +1,6 @@
 package de.canitzp;
 
+import com.mojang.serialization.MapCodec;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -28,6 +29,7 @@ import java.util.List;
 
 public class BatteryBoxBlock extends BaseEntityBlock {
 
+    public static final MapCodec<BatteryBoxBlock> CODEC = simpleCodec(BatteryBoxBlock::new);
     public static final IntegerProperty CHARGE = IntegerProperty.create("charge", 0, 4);
     public static final int CHARGE_EMPTY = 0;
     public static final int CHARGE_PRESENT_EMPTY = 1;
@@ -37,8 +39,13 @@ public class BatteryBoxBlock extends BaseEntityBlock {
 
     public static final BatteryBoxBlock INSTANCE = new BatteryBoxBlock();
 
-    protected BatteryBoxBlock() {
-        super(Properties.of().mapColor(MapColor.METAL).strength(2.0F, 120.0F).sound(SoundType.STONE));
+    private BatteryBoxBlock() {
+        this(Properties.of().mapColor(MapColor.METAL).strength(2.0F, 120.0F).sound(SoundType.STONE));
+    }
+
+    private BatteryBoxBlock(Properties properties) {
+        super(properties);
+
         this.registerDefaultState(this.getStateDefinition().any().setValue(CHARGE, CHARGE_EMPTY));
     }
 
@@ -51,6 +58,11 @@ public class BatteryBoxBlock extends BaseEntityBlock {
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         return new BatteryBoxBlockEntity(pos, state);
+    }
+
+    @Override
+    protected MapCodec<? extends BaseEntityBlock> codec() {
+        return CODEC;
     }
 
     @Override

@@ -17,11 +17,11 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.IEnergyStorage;
-import net.minecraftforge.items.ItemStackHandler;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.capabilities.ICapabilityProvider;
+import net.neoforged.neoforge.energy.IEnergyStorage;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -34,43 +34,43 @@ public class BatteryBoxBlockEntity extends BlockEntity {
     public static final BlockEntityType<BatteryBoxBlockEntity> TYPE = BlockEntityType.Builder.of(BatteryBoxBlockEntity::new, BatteryBoxBlock.INSTANCE).build(null);
 
     private final IEnergyStorage energyStorage = new IEnergyStorage() {
-        private Optional<IEnergyStorage> getLocalStorage(){
-            return BatteryBoxBlockEntity.this.getStack().getCapability(ForgeCapabilities.ENERGY).resolve();
+        private @Nullable IEnergyStorage getLocalStorage(){
+            return BatteryBoxBlockEntity.this.getStack().getCapability(Capabilities.EnergyStorage.ITEM);
         }
 
         @Override
         public int receiveEnergy(int maxReceive, boolean simulate) {
-            IEnergyStorage storage = this.getLocalStorage().orElse(null);
+            IEnergyStorage storage = this.getLocalStorage();
             return storage == null ? 0 : storage.receiveEnergy(maxReceive, simulate);
         }
 
         @Override
         public int extractEnergy(int maxExtract, boolean simulate) {
-            IEnergyStorage storage = this.getLocalStorage().orElse(null);
+            IEnergyStorage storage = this.getLocalStorage();
             return storage == null ? 0 : storage.extractEnergy(maxExtract, simulate);
         }
 
         @Override
         public int getEnergyStored() {
-            IEnergyStorage storage = this.getLocalStorage().orElse(null);
+            IEnergyStorage storage = this.getLocalStorage();
             return storage == null ? 0 : storage.getEnergyStored();
         }
 
         @Override
         public int getMaxEnergyStored() {
-            IEnergyStorage storage = this.getLocalStorage().orElse(null);
+            IEnergyStorage storage = this.getLocalStorage();
             return storage == null ? 0 : storage.getMaxEnergyStored();
         }
 
         @Override
         public boolean canExtract() {
-            IEnergyStorage storage = this.getLocalStorage().orElse(null);
+            IEnergyStorage storage = this.getLocalStorage();
             return storage != null && storage.canExtract();
         }
 
         @Override
         public boolean canReceive() {
-            IEnergyStorage storage = this.getLocalStorage().orElse(null);
+            IEnergyStorage storage = this.getLocalStorage();
             return storage != null && storage.canReceive();
         }
     };
@@ -78,7 +78,7 @@ public class BatteryBoxBlockEntity extends BlockEntity {
     private final ItemStackHandler stackHandler = new ItemStackHandler(this.stacks){
         @Override
         public boolean isItemValid(int slot, @NotNull ItemStack stack) {
-            return stack.getCapability(ForgeCapabilities.ENERGY).isPresent();
+            return stack.getCapability(Capabilities.EnergyStorage.ITEM) != null;
         }
 
         @Override
@@ -99,15 +99,12 @@ public class BatteryBoxBlockEntity extends BlockEntity {
         this.stackHandler.setStackInSlot(0, stack);
     }
 
-    @Override
-    public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
-        if(cap == ForgeCapabilities.ITEM_HANDLER){
-            return ForgeCapabilities.ITEM_HANDLER.orEmpty(cap, LazyOptional.of(() -> this.stackHandler));
-        }
-        if(cap == ForgeCapabilities.ENERGY){
-            return ForgeCapabilities.ENERGY.orEmpty(cap, LazyOptional.of(() -> this.energyStorage));
-        }
-        return super.getCapability(cap, side);
+    public IItemHandler getItemHandler(Direction side){
+        return this.stackHandler;
+    }
+
+    public IEnergyStorage getEnergyStorage(Direction side) {
+        return this.energyStorage;
     }
 
     public InteractionResult use(Player player, InteractionHand hand, ItemStack heldStack){
@@ -125,7 +122,7 @@ public class BatteryBoxBlockEntity extends BlockEntity {
                 }
             } else {
                 player.displayClientMessage(this.composeMessage(), true);
-                if(heldStack.getCapability(ForgeCapabilities.ENERGY).isPresent()){
+                if(heldStack.getCapability(Capabilities.EnergyStorage.ITEM) != null){
                     // Case if you right click with a battery, to charge the one in your hand up
                     return InteractionResult.PASS;
                 }
@@ -143,11 +140,10 @@ public class BatteryBoxBlockEntity extends BlockEntity {
     }
 
     private Component composeMessage(){
-        Optional<IEnergyStorage> resolved = this.getStack().getCapability(ForgeCapabilities.ENERGY).resolve();
-        if(resolved.isEmpty()){
+        IEnergyStorage storage = this.getEnergyStorage(null);
+        if(storage == null){
             return Component.translatable("block.batterybox.battery_box.empty");
         }
-        IEnergyStorage storage = resolved.get();
         float stateOfChargePercent = storage.getEnergyStored() / (1F * storage.getMaxEnergyStored()) * 100;
 
         Component stackName = this.getStack().getHoverName();
@@ -193,7 +189,7 @@ public class BatteryBoxBlockEntity extends BlockEntity {
             return;
         }
         if(!be.getStack().isEmpty()){
-            IEnergyStorage storage = be.getStack().getCapability(ForgeCapabilities.ENERGY).resolve().orElse(null);
+            IEnergyStorage storage = be.getStack().getCapability(Capabilities.EnergyStorage.ITEM);
             if(storage != null){
                 if(storage.getEnergyStored() > 0){
                     Map<Direction, BatteryBoxBlockEntity> otherBatteries = new HashMap<>();
@@ -214,7 +210,7 @@ public class BatteryBoxBlockEntity extends BlockEntity {
                     if(!otherBatteries.isEmpty() && storage.getEnergyStored() > 0){
                         float stateOfCharge = storage.getEnergyStored() / (1F * storage.getMaxEnergyStored());
                         for (Map.Entry<Direction, BatteryBoxBlockEntity> entry : otherBatteries.entrySet()) {
-                            IEnergyStorage otherStorage = entry.getValue().getCapability(ForgeCapabilities.ENERGY, entry.getKey()).resolve().orElse(null);
+                            IEnergyStorage otherStorage = entry.getValue().getEnergyStorage(null);
                             if (otherStorage != null && otherStorage.getEnergyStored() < otherStorage.getMaxEnergyStored()) {
                                 float otherStateOfCharge = otherStorage.getEnergyStored() / (1F * otherStorage.getMaxEnergyStored());
                                 if(stateOfCharge > otherStateOfCharge){
@@ -244,7 +240,7 @@ public class BatteryBoxBlockEntity extends BlockEntity {
     }
 
     private static void transferEnergy(IEnergyStorage storage, BlockEntity otherBlockEntity, Direction side){
-        IEnergyStorage otherStorage = otherBlockEntity.getCapability(ForgeCapabilities.ENERGY, side).resolve().orElse(null);
+        IEnergyStorage otherStorage = otherBlockEntity.getLevel().getCapability(Capabilities.EnergyStorage.BLOCK, otherBlockEntity.getBlockPos(), side.getOpposite());
         if (otherStorage != null && otherStorage.getEnergyStored() < otherStorage.getMaxEnergyStored()) {
             storage.extractEnergy(otherStorage.receiveEnergy(storage.getEnergyStored(), false), false);
         }
@@ -276,4 +272,5 @@ public class BatteryBoxBlockEntity extends BlockEntity {
         }
         return BatteryBoxBlock.CHARGE_PRESENT_FULL;
     }
+
 }

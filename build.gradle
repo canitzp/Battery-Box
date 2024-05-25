@@ -1,8 +1,7 @@
 plugins {
-    id "java"
+    id "java-library"
     id "idea"
-    id 'net.minecraftforge.gradle' version '[6.0,6.2)'
-    id 'org.parchmentmc.librarian.forgegradle' version '1.+'
+    id 'net.neoforged.gradle.userdev' version '7.0.97'
     id "com.modrinth.minotaur" version "2.+"
     id 'net.darkhax.curseforgegradle' version '1.+'
 }
@@ -15,50 +14,36 @@ archivesBaseName = "${project.mod_name}"
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
-    
-minecraft {
-    mappings channel: 'parchment', version: "${parchment_mapping_version}-${parchment_mc_version}"
 
-    copyIdeResources = true
+subsystems {
+    parchment {
+        minecraftVersion="${parchment_mc_version}"
+        mappingsVersion="${parchment_mapping_version}"
+    }
+}
 
-    runs {
-        client {
-            workingDirectory project.file('run')
-            property 'forge.logging.console.level', 'debug'
-
-            property 'mixin.env.remapRefMap', 'true'
-            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
-
-            mods {
-                batterybox {
-                    source sourceSets.main
-                }
-            }
-        }
-
-        server {
-            workingDirectory project.file('run_server')
-            property 'forge.logging.console.level', 'debug'
-
-            mods {
-                batterybox {
-                    source sourceSets.main
-                }
-            }
-        }
-
-        data {
-            workingDirectory project.file('run')
-            property 'forge.logging.console.level', 'debug'
-
-            args '--mod', 'batterybox', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
-
-            mods {
-                batterybox {
-                    source sourceSets.main
-                }
-            }
-        }
+runs {
+    configureEach {
+        //systemProperty 'forge.logging.markers', 'REGISTRIES'
+        systemProperty 'forge.logging.console.level', 'debug'
+        modSource project.sourceSets.main
+    }
+    client {
+        workingDirectory project.file('run')
+        systemProperty 'forge.enabledGameTestNamespaces', project.mod_id
+    }
+    server {
+        workingDirectory project.file('run_server')
+        systemProperty 'forge.enabledGameTestNamespaces', project.mod_id
+        programArgument '--nogui'
+    }
+    gameTestServer {
+        workingDirectory project.file('run_gametest')
+        systemProperty 'forge.enabledGameTestNamespaces', project.mod_id
+    }
+    data {
+        workingDirectory project.file('run_data')
+        programArguments.addAll '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
     }
 }
 
@@ -66,6 +51,7 @@ minecraft {
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 repositories {
+    mavenLocal()
     maven {
         url = "https://api.modrinth.com/maven"
     }
@@ -78,10 +64,25 @@ repositories {
 }
 
 dependencies {
-    minecraft "net.minecraftforge:forge:${project.forge_version}"
-    implementation fg.deobf("maven.modrinth:justabattery:47.2.1")
-    implementation fg.deobf("mekanism:Mekanism:1.20.1-10.4.5.19")
-    implementation fg.deobf("mezz.jei:jei-${project.jei_version}")
+    implementation "net.neoforged:neoforge:${project.neoforge_version}"
+    implementation "maven.modrinth:justabattery:204.1.0"
+    implementation "mezz.jei:jei-${project.jei_version}"
+}
+
+tasks.withType(ProcessResources).configureEach {
+    var replaceProperties = [
+            mod_loader: "javafml",
+            loader_version: "${project.valid_forge_versions}",
+            license: "${project.license}",
+            mod_id: "${project.mod_id}",
+            mod_name: "${project.mod_name}",
+            mod_version: "${project.mod_version}",
+            mc_version_range: "${project.mc_version_range}"
+    ]
+    inputs.properties replaceProperties
+    filesMatching(['META-INF/mods.toml', 'pack.mcmeta']) {
+        expand replaceProperties + [project: project]
+    }
 }
 
 jar {
@@ -98,7 +99,9 @@ jar {
     }
 }
 
-jar.finalizedBy('reobfJar')
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
+}
 
 idea {
     module {

@@ -2,7 +2,7 @@ package de.canitzp.data;
 
 import de.canitzp.BatteryBox;
 import net.minecraft.data.DataGenerator;
-import net.minecraftforge.common.data.LanguageProvider;
+import net.neoforged.neoforge.common.data.LanguageProvider;
 
 public class BBLanguageEnglish extends LanguageProvider {
 
