@@ -9,7 +9,7 @@
 | 1.20.1  |   Forge   | Supported |
 
 ## About
-Battery box is a "Mini-Mod" that does one simple thing. It adds a block that can hold a battery!\
+Battery box is a "Mini-Mod" that does one simple thing, it adds a block that can hold a battery!\
 Pairs perfectly with Just A Battery, but should work with other mod's battery cells as well!
 
 ![image](https://github.com/canitzp/Battery-Box/assets/68805162/304b6d18-47f8-4cac-b299-68791ff9ddb5) 
@@ -57,4 +57,4 @@ Battery box is great for prividing extra power to hungry devices and storage sys
 
 
 
-If you experience any issues or incompatabilities, Please open an Issue!
+If you experience any issues or incompatabilities, please open an Issue!
