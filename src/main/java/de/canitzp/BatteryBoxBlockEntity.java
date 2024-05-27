@@ -189,7 +189,7 @@ public class BatteryBoxBlockEntity extends BlockEntity {
             return;
         }
         if(!be.getStack().isEmpty()){
-            IEnergyStorage storage = be.getStack().getCapability(Capabilities.EnergyStorage.ITEM);
+            IEnergyStorage storage = be.getEnergyStorage(null);
             if(storage != null){
                 if(storage.getEnergyStored() > 0){
                     Map<Direction, BatteryBoxBlockEntity> otherBatteries = new HashMap<>();
