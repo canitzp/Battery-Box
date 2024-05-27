@@ -1,4 +1,4 @@
-package de.canitzp;
+package de.canitzp.batterybox;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;

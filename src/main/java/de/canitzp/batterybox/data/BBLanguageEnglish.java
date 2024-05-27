@@ -1,6 +1,6 @@
-package de.canitzp.data;
+package de.canitzp.batterybox.data;
 
-import de.canitzp.BatteryBox;
+import de.canitzp.batterybox.BatteryBox;
 import net.minecraft.data.DataGenerator;
 import net.neoforged.neoforge.common.data.LanguageProvider;
 

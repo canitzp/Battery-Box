@@ -1,7 +1,7 @@
-package de.canitzp.data;
+package de.canitzp.batterybox.data;
 
-import de.canitzp.BatteryBox;
-import de.canitzp.BatteryBoxBlock;
+import de.canitzp.batterybox.BatteryBox;
+import de.canitzp.batterybox.BatteryBoxBlock;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.client.model.generators.BlockStateProvider;

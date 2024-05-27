@@ -1,4 +1,4 @@
-package de.canitzp;
+package de.canitzp.batterybox;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -18,7 +18,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.capabilities.ICapabilityProvider;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
@@ -27,7 +26,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 public class BatteryBoxBlockEntity extends BlockEntity {
 
@@ -240,9 +238,9 @@ public class BatteryBoxBlockEntity extends BlockEntity {
     }
 
     private static void transferEnergy(IEnergyStorage storage, BlockEntity otherBlockEntity, Direction side){
-        IEnergyStorage otherStorage = otherBlockEntity.getLevel().getCapability(Capabilities.EnergyStorage.BLOCK, otherBlockEntity.getBlockPos(), side.getOpposite());
-        if (otherStorage != null && otherStorage.getEnergyStored() < otherStorage.getMaxEnergyStored()) {
-            storage.extractEnergy(otherStorage.receiveEnergy(storage.getEnergyStored(), false), false);
+        IEnergyStorage otherStorage = otherBlockEntity.getLevel().getCapability(Capabilities.EnergyStorage.BLOCK, otherBlockEntity.getBlockPos(), side);
+        if (otherStorage != null) {
+            storage.extractEnergy(otherStorage.receiveEnergy(storage.extractEnergy(storage.getMaxEnergyStored(), true), false), false);
         }
     }
 

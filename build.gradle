@@ -66,6 +66,9 @@ repositories {
 dependencies {
     implementation "net.neoforged:neoforge:${project.neoforge_version}"
     implementation "maven.modrinth:justabattery:204.1.0"
+    implementation "maven.modrinth:pipez:neoforge-1.20.4-1.2.7"
+    implementation "maven.modrinth:cloth-config:13.0.121+neoforge"
+    implementation "maven.modrinth:powah:5.4.0-beta-neoforge"
     implementation "mezz.jei:jei-${project.jei_version}"
 }
 

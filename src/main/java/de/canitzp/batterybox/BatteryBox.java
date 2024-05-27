@@ -1,6 +1,6 @@
-package de.canitzp;
+package de.canitzp.batterybox;
 
-import de.canitzp.data.*;
+import de.canitzp.batterybox.data.*;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;

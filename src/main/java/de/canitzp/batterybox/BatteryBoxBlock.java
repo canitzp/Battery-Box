@@ -1,4 +1,4 @@
-package de.canitzp;
+package de.canitzp.batterybox;
 
 import com.mojang.serialization.MapCodec;
 import net.minecraft.ChatFormatting;
