@@ -3,6 +3,7 @@ package de.canitzp.batterybox;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -10,7 +11,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -105,36 +106,36 @@ public class BatteryBoxBlockEntity extends BlockEntity {
         return this.energyStorage;
     }
 
-    public InteractionResult use(Player player, InteractionHand hand, ItemStack heldStack){
+    public ItemInteractionResult useItemOn(Player player, InteractionHand hand, ItemStack heldStack){
         if(!this.getStack().isEmpty()){
             if(player.isShiftKeyDown()){
                 if(heldStack.isEmpty()){
                     player.setItemInHand(hand, this.getStack());
                     this.setStack(ItemStack.EMPTY);
-                    return InteractionResult.SUCCESS;
+                    return ItemInteractionResult.SUCCESS;
                 } else {
                     if (player.addItem(this.getStack())) {
                         this.setStack(ItemStack.EMPTY);
-                        return InteractionResult.SUCCESS;
+                        return ItemInteractionResult.SUCCESS;
                     }
                 }
             } else {
                 player.displayClientMessage(this.composeMessage(), true);
                 if(heldStack.getCapability(Capabilities.EnergyStorage.ITEM) != null){
                     // Case if you right click with a battery, to charge the one in your hand up
-                    return InteractionResult.PASS;
+                    return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
                 }
             }
         } else if(!heldStack.isEmpty()) {
             ItemStack remainingStack = this.stackHandler.insertItem(0, heldStack, false);
             if(!remainingStack.equals(heldStack)){
                 player.setItemInHand(hand, remainingStack);
-                return InteractionResult.SUCCESS;
+                return ItemInteractionResult.SUCCESS;
             }
         } else {
             player.displayClientMessage(this.composeMessage(), true);
         }
-        return InteractionResult.PASS;
+        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
     }
 
     private Component composeMessage(){
@@ -161,21 +162,23 @@ public class BatteryBoxBlockEntity extends BlockEntity {
     }
 
     @Override
-    public void load(CompoundTag tag) {
-        super.load(tag);
+    public void loadAdditional(CompoundTag tag, HolderLookup.Provider pRegistries) {
+        super.loadAdditional(tag, pRegistries);
         if(tag.contains("stack", Tag.TAG_COMPOUND)){
-            this.stacks.set(0, ItemStack.of(tag.getCompound("stack")));
+            this.stacks.set(0, ItemStack.parseOptional(pRegistries, tag.getCompound("stack")));
         } else {
             this.stacks.set(0, ItemStack.EMPTY);
         }
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag) {
-        super.saveAdditional(tag);
-        CompoundTag stackTag = new CompoundTag();
-        this.getStack().save(stackTag);
-        tag.put("stack", stackTag);
+    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider pRegistries) {
+        super.saveAdditional(tag, pRegistries);
+        if(!this.getStack().isEmpty()){
+            CompoundTag stackTag = new CompoundTag();
+            this.getStack().save(pRegistries, stackTag);
+            tag.put("stack", stackTag);
+        }
     }
 
     public void dropContents(){

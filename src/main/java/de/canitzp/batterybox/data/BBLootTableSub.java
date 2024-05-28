@@ -1,6 +1,7 @@
 package de.canitzp.batterybox.data;
 
 import de.canitzp.batterybox.BatteryBox;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.loot.BlockLootSubProvider;
 import net.minecraft.data.loot.LootTableProvider;
@@ -11,11 +12,12 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 
 public class BBLootTableSub extends LootTableProvider {
 
-    public BBLootTableSub(DataGenerator generator) {
-        super(generator.getPackOutput(), Set.of(), List.of());
+    public BBLootTableSub(DataGenerator generator, CompletableFuture<HolderLookup.Provider> lookupProvider) {
+        super(generator.getPackOutput(), Set.of(), List.of(), lookupProvider);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package de.canitzp.batterybox.data;
 
 import de.canitzp.batterybox.BatteryBox;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
@@ -9,10 +10,12 @@ import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.world.item.Items;
 import net.neoforged.neoforge.common.Tags;
 
+import java.util.concurrent.CompletableFuture;
+
 public class BBRecipeProvider extends RecipeProvider {
 
-    public BBRecipeProvider(DataGenerator generator) {
-        super(generator.getPackOutput());
+    public BBRecipeProvider(DataGenerator generator, CompletableFuture<HolderLookup.Provider> lookupProvider) {
+        super(generator.getPackOutput(), lookupProvider);
     }
 
     @Override

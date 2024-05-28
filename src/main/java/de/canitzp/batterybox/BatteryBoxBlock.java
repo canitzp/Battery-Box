@@ -5,8 +5,9 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.BlockGetter;
@@ -50,7 +51,7 @@ public class BatteryBoxBlock extends BaseEntityBlock {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable BlockGetter level, List<Component> text, TooltipFlag tooltipFlag) {
+    public void appendHoverText(ItemStack stack, Item.TooltipContext pContext, List<Component> text, TooltipFlag tooltipFlag) {
         text.add(Component.translatable("block.batterybox.battery_box.description").withStyle(ChatFormatting.GRAY));
     }
 
@@ -71,13 +72,13 @@ public class BatteryBoxBlock extends BaseEntityBlock {
     }
 
     @Override
-    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult trace) {
+    protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult trace) {
         ItemStack heldStack = player.getItemInHand(hand);
         BlockEntity blockEntity = level.getBlockEntity(pos);
         if(blockEntity instanceof BatteryBoxBlockEntity) {
-            return ((BatteryBoxBlockEntity) blockEntity).use(player, hand, heldStack);
+            return ((BatteryBoxBlockEntity) blockEntity).useItemOn(player, hand, heldStack);
         }
-        return InteractionResult.PASS;
+        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
     }
 
     @Override

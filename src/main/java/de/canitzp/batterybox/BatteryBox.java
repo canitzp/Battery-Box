@@ -13,6 +13,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
@@ -23,7 +24,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 
-@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
 @Mod(BatteryBox.MODID)
 public class BatteryBox {
 
@@ -59,9 +60,9 @@ public class BatteryBox {
         generator.addProvider(event.includeClient(), new BBBlockStateProvider(generator, helper));
         generator.addProvider(event.includeClient(), new BBItemModelProvider(generator, helper));
         generator.addProvider(true, new BBTagProvider(generator, lookupProvider, helper));
-        generator.addProvider(true, new BBRecipeProvider(generator));
+        generator.addProvider(true, new BBRecipeProvider(generator, lookupProvider));
         generator.addProvider(true, new BBLanguageEnglish(generator));
-        generator.addProvider(true, new BBLootTableSub(generator));
+        generator.addProvider(true, new BBLootTableSub(generator, lookupProvider));
     }
 
     private void registerCapabilities(RegisterCapabilitiesEvent event){
