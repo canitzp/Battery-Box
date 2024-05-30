@@ -96,6 +96,7 @@ public class BatteryBoxBlockEntity extends BlockEntity {
 
     public void setStack(ItemStack stack){
         this.stackHandler.setStackInSlot(0, stack);
+        this.setChanged();
     }
 
     public IItemHandler getItemHandler(Direction side){
@@ -129,6 +130,7 @@ public class BatteryBoxBlockEntity extends BlockEntity {
         } else if(!heldStack.isEmpty()) {
             ItemStack remainingStack = this.stackHandler.insertItem(0, heldStack, false);
             if(!remainingStack.equals(heldStack)){
+                this.setChanged();
                 player.setItemInHand(hand, remainingStack);
                 return ItemInteractionResult.SUCCESS;
             }
@@ -139,10 +141,10 @@ public class BatteryBoxBlockEntity extends BlockEntity {
     }
 
     private Component composeMessage(){
-        IEnergyStorage storage = this.getEnergyStorage(null);
-        if(storage == null){
+        if(this.getStack().isEmpty()){
             return Component.translatable("block.batterybox.battery_box.empty");
         }
+        IEnergyStorage storage = this.getEnergyStorage(null);
         float stateOfChargePercent = storage.getEnergyStored() / (1F * storage.getMaxEnergyStored()) * 100;
 
         Component stackName = this.getStack().getHoverName();
@@ -175,9 +177,7 @@ public class BatteryBoxBlockEntity extends BlockEntity {
     protected void saveAdditional(CompoundTag tag, HolderLookup.Provider pRegistries) {
         super.saveAdditional(tag, pRegistries);
         if(!this.getStack().isEmpty()){
-            CompoundTag stackTag = new CompoundTag();
-            this.getStack().save(pRegistries, stackTag);
-            tag.put("stack", stackTag);
+            tag.put("stack", this.getStack().save(pRegistries, new CompoundTag()));
         }
     }
 
@@ -202,6 +202,7 @@ public class BatteryBoxBlockEntity extends BlockEntity {
                                 otherBatteries.put(direction.getOpposite(), (BatteryBoxBlockEntity) otherBlockEntity);
                             } else {
                                 BatteryBoxBlockEntity.transferEnergy(storage, otherBlockEntity, direction.getOpposite());
+                                be.setChanged();
                                 if(storage.getEnergyStored() <= 0){
                                     break;
                                 }

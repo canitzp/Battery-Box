@@ -1,3 +1,6 @@
+206.0.0 (30.05.2024):
+- Update to 1.20.6
+
 204.0.0 (27.05.2024):
 - Update to 1.20.4
 - Migration to NeoForge

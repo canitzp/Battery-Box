@@ -2,11 +2,11 @@
 
 ### Support
 
-| Version | Modloader |  Status   |
-|:-------:|:---------:|:---------:|
-| 1.20.6  | NeoForge  |  Planned  |
-| 1.20.4  | NeoForge  | Supported |
-| 1.20.1  |   Forge   | Supported |
+| Version | Modloader | Support-Status |
+|:-------:|:---------:|:--------------:|
+| 1.20.6  | NeoForge  |       ✅        |
+| 1.20.4  | NeoForge  |       ✅        |
+| 1.20.1  |   Forge   |       ✅        |
 
 ## About
 Battery box is a "Mini-Mod" that does one simple thing, it adds a block that can hold a battery!\
