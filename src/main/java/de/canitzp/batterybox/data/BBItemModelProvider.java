@@ -15,6 +15,6 @@ public class BBItemModelProvider extends ItemModelProvider {
 
     @Override
     protected void registerModels() {
-        this.withExistingParent(BuiltInRegistries.BLOCK.getKey(BatteryBox.BATTERY_BOX.get()).getPath(), new ResourceLocation(BatteryBox.MODID, "block/battery_box_0"));
+        this.withExistingParent(BuiltInRegistries.BLOCK.getKey(BatteryBox.BATTERY_BOX.get()).getPath(), ResourceLocation.fromNamespaceAndPath(BatteryBox.MODID, "block/battery_box_0"));
     }
 }

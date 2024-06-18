@@ -4,8 +4,9 @@
 
 | Version | Modloader | Support-Status |
 |:-------:|:---------:|:--------------:|
+|  1.21   | NeoForge  |       ✅        |
 | 1.20.6  | NeoForge  |       ✅        |
-| 1.20.4  | NeoForge  |       ✅        |
+| 1.20.4  | NeoForge  |       ❌        |
 | 1.20.1  |   Forge   |       ✅        |
 
 ## About
